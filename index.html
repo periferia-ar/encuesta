@@ -10,7 +10,7 @@
 <meta property="og:site_name" content="Periferia Consultora">
 <meta property="og:title" content="Encuesta a clientes · Campo Jalean">
 <meta property="og:description" content="¿Qué pensás del agua y el servicio? Unos 5 minutos. Respuestas confidenciales.">
-<meta property="og:url" content="https://encuesta.periferia.ar/">
+<meta property="og:url" content="https://encuesta.periferia.ar/revision/">
 <meta property="og:image" content="https://encuesta.periferia.ar/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,7 +30,6 @@
     El código se guarda con las respuestas (campo "cod"). La tabla código ↔ cliente
     la tiene solo Periferia; Campo Jalean no recibe respuestas individuales.
     Opcional: &k=whatsapp | qr | repartidor para registrar el canal de llegada.
-  · Modo CAMPO (guarda en Google Sheets). Vista previa para revisar: agregar ?preview=1 al link.
   · FORCE_PREVIEW = true → vista previa para revisar: muestra todas las preguntas,
     las condiciones de cada una y el código de variable; no valida ni guarda.
     Con FORCE_PREVIEW = false, la vista previa se abre igual agregando ?preview=1.
@@ -405,15 +404,15 @@ body.preview #app{padding-top:112px}
 // ============================================================
 // CONFIG
 // ============================================================
-const FORCE_PREVIEW = false;       // true = vista previa (sin validaciones, sin guardar, con todas las condicionales visibles). ⚠ Poner en false para salir a campo.
+const FORCE_PREVIEW = true;        // true = vista previa (sin validaciones, sin guardar, con todas las condicionales visibles). ⚠ Poner en false para salir a campo.
 const PREVIEW = FORCE_PREVIEW || new URLSearchParams(location.search).get('preview') === '1';
 const ESTUDIO_COD = 'CLI';           // Código del estudio en la base.
 const OLA_ACTUAL = 'P1';             // P1 = piloto. ⚠ Pasar a '01' para el campo definitivo.
 const OLA_FECHA = 'Octubre 2026';    // ⚠ ajustar a la fecha real de campo
 const CUOTA_CERRADA = false;         // true cuando se cierra la recolección
 const OLA_KEY_SUFFIX = ESTUDIO_COD.toLowerCase() + '_ola_' + OLA_ACTUAL;
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxd0E27CZ59W33yaE4J9rDxPbZmtFPH0T3ytJBixniCPgQs1CpsX8e0rJ5AmIqGkwTivw/exec'; // receptor en Google Sheets (Periferia)
-const ADMIN_PW = 'periferia';   // panel admin (doble clic en el logo): solo muestra lo guardado en este dispositivo
+const APPS_SCRIPT_URL = 'REEMPLAZAR_CON_TU_URL_DE_APPS_SCRIPT'; // ⚠ endpoint de Google Sheets
+const ADMIN_PW = '';   // vista previa: panel deshabilitado. ⚠ Definir una contraseña para campo.
 const QS = new URLSearchParams(location.search);
 // Código personal del cliente (?c=CODIGO). Solo letras, números, guion y guion bajo.
 const COD = (QS.get('c') || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'').slice(0,24);
@@ -533,7 +532,7 @@ const SECTIONS = [
 ]},
 
 { id:'sD', tag:'D', path:'hog', title:'Campo Jalean y vos', sub:'Cómo llegaste a la marca.', qs:[
-  { id:'p16', type:'cards', pin:'Revisar con el cliente: puede haber otras formas de llegada que no están en la lista.', label:'¿Cómo conociste Campo Jalean?', other:'otro', opts:[
+  { id:'p16', type:'cards', pin:'Para revisar con ustedes: ¿hay otras formas por las que llegan los clientes que no estén en la lista?', label:'¿Cómo conociste Campo Jalean?', other:'otro', opts:[
     O('puerta','El repartidor pasó por mi casa'), O('recomendacion','Me la recomendó alguien'), O('busque','La busqué yo'),
     O('redes','Por redes sociales'), O('evento','En un evento o stand'), O('otro','De otra forma','Especificá') ] },
   { id:'p17', type:'chips', label:'¿Usás o usaste otra marca de agua en <b>bidón retornable</b> en tu casa?', note:'Bidones de 12 o 20 litros que se devuelven. No cuentan las botellas que se compran sueltas.', opts:[O('no','No'),O('antes','Sí, antes de Campo Jalean'),O('vez','Sí, la uso a la vez')] },
@@ -562,7 +561,7 @@ const SECTIONS = [
 ]},
 
 { id:'sF', tag:'F–G', path:'hog', title:'El servicio y los bidones', sub:'Cómo funciona hoy la entrega.', qs:[
-  { id:'p22', type:'grid', pin:'Importante: que lo vea el cliente para sumar algún aspecto del servicio.', label:'¿Cómo calificarías cada aspecto del servicio?', note:'Marcá una opción en cada fila.',
+  { id:'p22', type:'grid', pin:'Importante: ¿falta algún aspecto del servicio que quieran que los clientes evalúen?', label:'¿Cómo calificarías cada aspecto del servicio?', note:'Marcá una opción en cada fila.',
     rows:[O('puntualidad','Puntualidad'),O('trato','Trato del repartidor'),O('frecuencia','Frecuencia de entrega'),O('pago','Formas de pago'),O('higiene_bidon','Higiene de los bidones')],
     cols:SERVICIO },
   { id:'p23', type:'chips', label:'¿Conocés el bidón de 12 litros de Campo Jalean?', opts:[O('no','No'),O('si_no','Sí, pero no lo uso'),O('si_uso','Sí, lo uso')] },
@@ -587,7 +586,7 @@ const SECTIONS = [
     O('precio','Un aumento de precio'), O('entrega','Que no cumplan con el día de entrega'), O('atencion','Mala atención'), O('calidad','Cambios en el sabor o la calidad'),
     O('higiene','Problemas de higiene'), O('filtro','Pasarme a un filtro o purificador'), O('barata','Otra marca más barata'), O('mudanza','Una mudanza'),
     O('nada','Nada, no la dejaría'), O('otro','Otro motivo') ] },
-  { id:'p30', type:'multichips', max:2, shuffle:true, pin:'Conversar con el cliente: qué mejoras son posibles y conviene preguntar.', label:'¿Qué mejorarías del servicio? Elegí <b>hasta 2</b>.', exclusive:['nada'], other:'otro', opts:MEJORAS },
+  { id:'p30', type:'multichips', max:2, shuffle:true, pin:'Para conversar con ustedes: ¿qué mejoras son posibles y conviene preguntar?', label:'¿Qué mejorarías del servicio? Elegí <b>hasta 2</b>.', exclusive:['nada'], other:'otro', opts:MEJORAS },
   { id:'p31', type:'cards', label:'Desde que sos cliente, ¿le recomendaste Campo Jalean a alguien?', opts:[O('si_cliente','Sí, y se hizo cliente'),O('si_nosabe','Sí, pero no sé si se hizo cliente'),O('si_no','Sí, pero no se hizo cliente'),O('no','No, a nadie todavía')] },
 ]},
 
