@@ -614,8 +614,8 @@ const SECTIONS = [
 { id:'sN', tag:'G2', path:'hog', title:'Otras bebidas', sub:'Para conocer qué más se toma en tu casa.', qs:[
   { id:'n1', type:'multichips', shuffle:true, exclusive:['ninguna'], pvNote:'Nuevo (22/10): consumo actual de otras bebidas (orienta aguas saborizadas y funcionales).',
     label:'Además del agua de Campo Jalean, ¿qué otras bebidas se compran en tu casa?', note:'Podés marcar varias.', opts:[
-    O('mineral','Agua mineral en botella'), O('saborizada','Agua saborizada'), O('isotonica','Bebidas deportivas o isotónicas (tipo Powerade o Gatorade)'),
-    O('gaseosa','Gaseosas'), O('jugo','Jugos (en botella o en polvo)'), O('soda','Soda'), O('energizante','Energizantes'),
+    O('saborizada','Agua saborizada'), O('isotonica','Bebidas deportivas o isotónicas (tipo Powerade o Gatorade)'),
+    O('jugo','Jugos (en botella o en polvo)'), O('soda','Soda'),
     O('ninguna','Ninguna de estas') ] },
   { id:'n2', type:'multichips', max:3, shuffle:true, other:'otro', showIf:r=>(r.n1||[]).some(v=>['saborizada','isotonica','jugo'].includes(v)),
     label:'En esas bebidas, ¿qué sabores eligen más en tu casa? Elegí <b>hasta 3</b>.', opts:[
