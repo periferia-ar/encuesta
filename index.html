@@ -31,6 +31,8 @@
     la tiene solo Periferia; Campo Jalean no recibe respuestas individuales.
     Opcional: &k=whatsapp | qr | repartidor para registrar el canal de llegada.
   · Modo CAMPO (guarda en Google Sheets). Vista previa para revisar: agregar ?preview=1 al link.
+  · Modo PRUEBA (?prueba=1): igual a lo que ve el cliente y guarda en la planilla, pero con cod=PRUEBA y prueba=1
+    para filtrar o borrar esas filas. Se puede repetir en el mismo dispositivo.
   · FORCE_PREVIEW = true → vista previa para revisar: muestra todas las preguntas,
     las condiciones de cada una y el código de variable; no valida ni guarda.
     Con FORCE_PREVIEW = false, la vista previa se abre igual agregando ?preview=1.
@@ -452,6 +454,8 @@ const OLA_KEY_SUFFIX = ESTUDIO_COD.toLowerCase() + '_ola_' + OLA_ACTUAL;
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxd0E27CZ59W33yaE4J9rDxPbZmtFPH0T3ytJBixniCPgQs1CpsX8e0rJ5AmIqGkwTivw/exec'; // receptor en Google Sheets (Periferia)
 const ADMIN_PW = 'periferia';   // panel admin (doble clic en el logo): solo muestra lo guardado en este dispositivo
 const QS = new URLSearchParams(location.search);
+// Prueba final (?prueba=1): versión de campo completa, guarda en la planilla marcada como prueba y permite repetir
+const PRUEBA = !PREVIEW && QS.get('prueba') === '1';
 // Código personal del cliente (?c=CODIGO). Solo letras, números, guion y guion bajo.
 const COD = (QS.get('c') || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'').slice(0,24);
 // Validación del código: 5 caracteres + 1 de control (mismo cálculo que la planilla de envío de Periferia)
@@ -913,7 +917,7 @@ function init(){
   if (COD) document.getElementById('case-display').textContent = COD;
   if (PREVIEW){ previewInit(); return; }
   if (CUOTA_CERRADA){ showOnly('closed'); document.getElementById('progress-bar-wrap').style.display='none'; return; }
-  if (yaRespondio()){ showOnly('already'); return; }
+  if (!PRUEBA && yaRespondio()){ showOnly('already'); return; }
 }
 function previewDecorate(){
   Object.values(QMAP).forEach(q=>{
@@ -955,7 +959,7 @@ function startSurvey(){
   caseUUID = generateUUID();
   startTime = Date.now();
   // el consentimiento se informa en el mensaje de WhatsApp: abrir el enlace y empezar equivale a aceptar
-  responses = { uuid:caseUUID, cod:COD || 'sin_codigo', cod_ok:(COD && codValido(COD)) ? 1 : 0, canal:CANAL, consent:'mensaje', fp:huella(), estudio:ESTUDIO_COD, ola:OLA_ACTUAL, ola_fecha:OLA_FECHA, startTime:new Date().toISOString() };
+  responses = { uuid:caseUUID, cod:PRUEBA ? 'PRUEBA' : (COD || 'sin_codigo'), cod_ok:(!PRUEBA && COD && codValido(COD)) ? 1 : 0, prueba:PRUEBA ? 1 : 0, canal:PRUEBA ? 'prueba' : CANAL, consent:'mensaje', fp:huella(), estudio:ESTUDIO_COD, ola:OLA_ACTUAL, ola_fecha:OLA_FECHA, startTime:new Date().toISOString() };
   buildSections();
   if (!COD) document.getElementById('case-display').textContent = caseUUID.slice(0,8);
   goToScreen(activeSections()[0].id);
@@ -1083,7 +1087,7 @@ async function finishSurvey(){
     responses.q_honeypot = responses.hp ? 1 : 0; delete responses.hp;
     responses.q_ok = (!responses.q_rapido && !responses.q_recta && !responses.q_honeypot) ? 1 : 0;
     await saveResponse(responses);
-    marcarRespondido();
+    if (!PRUEBA) marcarRespondido();
     goToScreen('thanks');
   } catch(e){
     btn.disabled = false; btn.textContent = 'Enviar respuestas ✓'; btn.style.opacity = '1';
