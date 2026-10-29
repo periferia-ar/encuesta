@@ -5,13 +5,13 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Encuesta a clientes · Campo Jalean</title>
-<meta name="description" content="¿Qué pensás del agua y el servicio? Unos 5 minutos. Respuestas confidenciales. Realizada por Periferia Consultora.">
+<meta name="description" content="¿Qué pensás del agua y el servicio? Unos 5 minutos. 15% de descuento al completarla (tope $2.000). Respuestas confidenciales. Realizada por Periferia Consultora.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Periferia Consultora">
 <meta property="og:title" content="Encuesta a clientes · Campo Jalean">
-<meta property="og:description" content="¿Qué pensás del agua y el servicio? Unos 5 minutos. Respuestas confidenciales.">
+<meta property="og:description" content="¿Qué pensás del agua y el servicio? Unos 5 minutos. 15% de descuento al completarla (tope $2.000). Respuestas confidenciales.">
 <meta property="og:url" content="https://encuesta.periferia.ar/">
-<meta property="og:image" content="https://encuesta.periferia.ar/og.png">
+<meta property="og:image" content="https://encuesta.periferia.ar/og.png?v=3">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="es_AR">
@@ -367,7 +367,7 @@ html,body{font-size:17px}
       <div class="welcome-meta-item"><div class="val">Confidencial</div><div class="lbl">respuestas</div></div>
       <div class="welcome-meta-item"><div class="val">Clientes</div><div class="lbl">Campo Jalean</div></div>
     </div>
-    <div class="welcome-sorteo">Respondela si sos <b>quien compra el agua</b> en tu casa o empresa. Si no, pasale el link a esa persona.<br><br>🔒 Tu link es personal y tus respuestas, confidenciales: Campo Jalean solo ve resultados generales.</div>
+    <div class="welcome-sorteo">🎁 Al completarla tenés un <b>15% de descuento</b> en tu próxima compra de Campo Jalean (tope de $2.000).<br><br>Respondela si sos <b>quien compra el agua</b> en tu casa o empresa. Si no, pasale el link a esa persona.<br><br>🔒 Tu link es personal y tus respuestas, confidenciales: Campo Jalean solo ve resultados generales.</div>
     <button class="btn-start" onclick="startSurvey()">Empezar encuesta</button>
     <p class="privacy-note">Hecha por Periferia Consultora · Participar es voluntario</p>
   </div>
@@ -382,6 +382,9 @@ html,body{font-size:17px}
     <div class="check-anim">✓</div>
     <div class="thanks-title">¡Gracias por responder!</div>
     <p class="thanks-sub">Tu respuesta quedó registrada. Nos ayuda a entender qué valoran los clientes y qué se puede mejorar del servicio.</p>
+    <div class="result-promise">
+      <p><strong>🎁 Ya tenés tu 15% de descuento</strong> en tu próxima compra de Campo Jalean (tope de $2.000).</p>
+    </div>
     <div class="result-promise">
       <p><strong>Tus respuestas son confidenciales.</strong> Campo Jalean recibe solo resultados generales, nunca respuestas individuales.</p>
     </div>
@@ -502,7 +505,7 @@ const RECARGA    = r => ['si','tal_vez'].includes(r.p25);
 const SERVICIO = [O('1','Malo'),O('2','Regular'),O('3','Bueno'),O('4','Muy bueno')];   // escala cargada hacia arriba: discrimina mejor entre clientes conformes
 const ATRIBUTOS = [
   O('sabor','El sabor'), O('vertiente','Que sea agua de vertiente'), O('pureza','La pureza'), O('salud','Que es saludable'),
-  O('reparto','El servicio de reparto'), O('trato','El trato'), O('precio','El precio'), O('riojana','Que sea riojana') ];
+  O('reparto','El servicio de reparto'), O('trato','El trato'), O('precio','El precio'), O('riojana','Que sea riojana'), O('deporte','Ideal para hidratarse al hacer deporte') ];
 // Lista de imagen (p19): 8 dimensiones, una palabra positiva y una negativa cada una. val: + / − / d (descriptiva, no cuenta)
 const PALABRAS_DEF = [
   ['natural','Natural','+'], ['procesada','Procesada','-'],
@@ -528,7 +531,7 @@ const MEJORAS = [
 // ============================================================
 const SECTIONS = [
 { id:'s0', tag:'0', title:'Para empezar', sub:'Una primera pregunta para mostrarte las preguntas que te corresponden.', qs:[
-  { id:'p1', type:'cards', label:'¿Para dónde recibís el agua Campo Jalean?', opts:[
+  { id:'p1', type:'cards', label:'¿Dónde recibís el agua Campo Jalean?', opts:[
     O('hogar','Para mi casa'), O('empresa','Para una empresa, comercio u oficina'), O('ambos','Para los dos','Respondé pensando en tu casa') ] },
 ]},
 
@@ -554,7 +557,7 @@ const SECTIONS = [
     O('cortes','Cortes de agua o baja presión'), O('medico','Recomendación médica'), O('costumbre','Por costumbre'), O('otro','Otro motivo') ] },
   { id:'p11', type:'multichips', label:'¿Para qué consumen el agua Campo Jalean?', note:'Podés marcar varias.', other:'otro', opts:[
     O('tomar','Para tomar'), O('cocinar','Para cocinar'), O('mate','Para el mate o infusiones'), O('bebes','Para bebés (mamaderas, comidas)'),
-    O('mascotas','Para las mascotas'), O('otro','Otro uso') ] },
+    O('mascotas','Para las mascotas'), O('deporte','Para llevar al hacer deporte o actividad física'), O('otro','Otro uso') ] },
   { id:'p9', type:'chips', label:'¿Cuántos bidones reciben por mes, más o menos?', note:'Contá todos, de 20 y de 12 litros.', opts:[O('1','1'),O('2','2'),O('3_4','3 o 4'),O('5_8','5 a 8'),O('9','Más de 8')] },
   { id:'p10', type:'chips', label:'¿Qué bidones usan?', opts:[O('20','De 20 litros'),O('12','De 12 litros'),O('ambos','De los dos')] },
 ]},
@@ -566,7 +569,8 @@ const SECTIONS = [
   { id:'p17', type:'chips', label:'¿Usás o usaste otra marca de agua en <b>bidón retornable</b> en tu casa?', note:'Bidones de 12 o 20 litros que se devuelven. No cuentan las botellas que se compran sueltas.', opts:[O('no','No'),O('antes','Sí, antes de Campo Jalean'),O('vez','Sí, la uso a la vez')] },
   { id:'p17a', type:'text', label:'¿Qué marca?', ph:'Si no te acordás, escribí «no me acuerdo»', showIf:OTRA_MARCA },
   { id:'p17b', type:'text', req:false, label:'¿Por qué elegís Campo Jalean frente a esa otra marca? <span style="color:var(--tinta-60);font-size:12px">(opcional)</span>', ph:'En pocas palabras', showIf:OTRA_MARCA },
-  { id:'p18', type:'text', label:'Cuando pensás en Campo Jalean, ¿qué es lo <b>primero</b> que se te viene a la cabeza?', ph:'Una palabra o una frase' },
+  { id:'p18o', type:'cards', pvNote:'Nuevo (29/10): reemplaza «lo primero que se te viene a la cabeza».', label:'¿Conocés el origen del agua Campo Jalean?', opts:[
+    O('si','Conozco el origen del agua'), O('algo','Tengo una idea, pero no lo sé bien'), O('no','No conozco en absoluto de dónde viene') ] },
 ]},
 
 { id:'sE', tag:'E1', path:'hog', title:'Cómo ves a Campo Jalean', sub:'No hay respuestas correctas: nos interesa tu opinión.', qs:[
