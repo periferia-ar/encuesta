@@ -912,7 +912,6 @@ function init(){
   if (COD) document.getElementById('case-display').textContent = COD;
   if (PREVIEW){ previewInit(); return; }
   if (CUOTA_CERRADA){ showOnly('closed'); document.getElementById('progress-bar-wrap').style.display='none'; return; }
-  if (yaRespondio()){ showOnly('already'); return; }
 }
 function previewDecorate(){
   Object.values(QMAP).forEach(q=>{
@@ -1082,7 +1081,6 @@ async function finishSurvey(){
     responses.q_honeypot = responses.hp ? 1 : 0; delete responses.hp;
     responses.q_ok = (!responses.q_rapido && !responses.q_recta && !responses.q_honeypot) ? 1 : 0;
     await saveResponse(responses);
-    marcarRespondido();
     goToScreen('thanks');
   } catch(e){
     btn.disabled = false; btn.textContent = 'Enviar respuestas ✓'; btn.style.opacity = '1';
