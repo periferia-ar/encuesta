@@ -41,7 +41,6 @@
   · Imagen: lista de palabras sin tope (p19) + la que mejor la describe (p19p) + 5 pares opuestos (p19d).
     Derivadas: p19_npos, p19_nneg, q_contra (marcó dos opuestas).
   · Pares opuestos (p19d): q_recta = 1 si marcó todo en la misma posición.
-  · p15 está en evaluación: se puede quitar.
   · Marcas 📌 de la vista previa: puntos para revisar con el cliente antes del campo.
   · Recomendación: se pregunta la conducta (p31 / e6: si recomendó y si se hizo cliente),
     no la intención 0 a 10, que en clientes conformes se amontona arriba.
@@ -513,9 +512,8 @@ const PALABRAS = [...PALABRAS_DEF.map(([v,t])=>O(v,t)), O('ninguna','Ninguna de 
 const VALENCIA = Object.fromEntries(PALABRAS_DEF.map(([v,,s])=>[v,s]));
 const OPUESTAS = [['natural','procesada'],['pura','dudas'],['rica','pesada'],['especial','comun'],['practica','poco_practica'],['cercana','impersonal'],['accesible','cara']];
 const MEJORAS = [
-  O('dias','Más días u horarios de entrega'), O('aviso','Aviso cuando el repartidor está por llegar'), O('whatsapp','Hacer pedidos por WhatsApp'),
-  O('pago','Más formas de pago'), O('precio','Mejor precio o promociones'), O('livianos','Envases más livianos'),
-  O('dispenser','Higienización del dispenser'), O('nada','Nada, está bien así'), O('otro','Otra cosa') ];
+  O('aviso','Aviso cuando el repartidor está por llegar'), O('seguimiento','Seguimiento en tiempo real del repartidor'), O('whatsapp','Hacer pedidos por WhatsApp'),
+  O('pago','Más formas de pago'), O('livianos','Envases más livianos'), O('nada','Nada, está bien así'), O('otro','Otra cosa') ];
 
 // ============================================================
 // CUESTIONARIO (v3)
@@ -545,32 +543,20 @@ const SECTIONS = [
   { id:'p8', type:'chips', label:'¿Qué cobertura de salud tenés?', opts:[O('os','Obra social (incluye PAMI)'),O('prepaga','Prepaga'),O('ninguna','Ninguna')] },
 ]},
 
-{ id:'sB', tag:'B', path:'hog', title:'Tu consumo de agua', sub:'Cuánto y para qué usan el agua Campo Jalean en tu casa.', qs:[
-  { id:'p9', type:'chips', label:'¿Cuántos bidones reciben por mes, más o menos?', note:'Contá todos, de 20 y de 12 litros.', opts:[O('1','1'),O('2','2'),O('3_4','3 o 4'),O('5_8','5 a 8'),O('9','Más de 8')] },
-  { id:'p10', type:'chips', label:'¿Qué bidones usan?', opts:[O('20','De 20 litros'),O('12','De 12 litros'),O('ambos','De los dos')] },
-  { id:'p11', type:'multichips', label:'¿Para qué consumen el agua Campo Jalean?', note:'Podés marcar varias.', other:'otro', opts:[
-    O('tomar','Para tomar'), O('cocinar','Para cocinar'), O('mate','Para el mate o infusiones'), O('bebes','Para bebés (mamaderas, comidas)'),
-    O('mascotas','Para las mascotas'), O('otro','Otro uso') ] },
-]},
-
-{ id:'sC', tag:'C', path:'hog', title:'El agua de la canilla', sub:'Cómo ves el agua de red en tu casa.', qs:[
-  { id:'p12', type:'grid', label:'¿Cómo es el agua de la canilla en tu casa?', note:'Marcá una opción en cada fila.',
-    rows:[ // cada fila con sus propias opciones · 1 = peor, 2 = normal, 3 = mejor (olor y color no tienen 3)
-      { v:'sabor', t:'Sabor', cols:[O('1','Feo'),O('2','Normal'),O('3','Rico'),O('ns','No sé')] },
-      { v:'olor',  t:'Olor',  cols:[O('1','Tiene olor'),O('2','Normal, sin olor'),O('ns','No sé')] },
-      { v:'color', t:'Color', cols:[O('1','Turbia o con color'),O('2','Normal, transparente'),O('ns','No sé')] },
-      { v:'sarro', t:'Sarro', cols:[O('1','Deja mucho sarro'),O('2','Normal'),O('3','Casi nada'),O('ns','No sé')] } ] },
-  { id:'p13', type:'chips', label:'¿Tomás agua de la canilla sin filtrar?', opts:[O('hab','Sí, habitualmente'),O('aveces','A veces'),O('nunca','Nunca')] },
+{ id:'sB', tag:'B', path:'hog', title:'Tu consumo de agua', sub:'Por qué y cómo usan el agua envasada en tu casa.', qs:[
   { id:'p14', type:'multichips', label:'¿Por qué motivos empezaron a consumir agua envasada en tu casa?', note:'Podés marcar varios.', other:'otro', opts:[
     O('desconfianza','Desconfianza del agua de la canilla'), O('sabor','Mejor sabor'), O('salud','Por salud'), O('sarro','El sarro o los residuos'),
     O('cortes','Cortes de agua o baja presión'), O('medico','Recomendación médica'), O('costumbre','Por costumbre'), O('otro','Otro motivo') ] },
-  { id:'p14p', type:'principal', from:'p14', label:'Y de esos, ¿cuál fue el <b>principal</b>?', showIf:r=>(r.p14||[]).length>1 },
-  { id:'p15', type:'chips', pvNote:'En evaluación: se puede quitar.', label:'Si te garantizaran que el agua de la canilla es segura, ¿la tomarías en lugar del agua envasada?', opts:[O('si','Sí'),O('tal_vez','Tal vez'),O('no','No')] },
+  { id:'p11', type:'multichips', label:'¿Para qué consumen el agua Campo Jalean?', note:'Podés marcar varias.', other:'otro', opts:[
+    O('tomar','Para tomar'), O('cocinar','Para cocinar'), O('mate','Para el mate o infusiones'), O('bebes','Para bebés (mamaderas, comidas)'),
+    O('mascotas','Para las mascotas'), O('otro','Otro uso') ] },
+  { id:'p9', type:'chips', label:'¿Cuántos bidones reciben por mes, más o menos?', note:'Contá todos, de 20 y de 12 litros.', opts:[O('1','1'),O('2','2'),O('3_4','3 o 4'),O('5_8','5 a 8'),O('9','Más de 8')] },
+  { id:'p10', type:'chips', label:'¿Qué bidones usan?', opts:[O('20','De 20 litros'),O('12','De 12 litros'),O('ambos','De los dos')] },
 ]},
 
 { id:'sD', tag:'D', path:'hog', title:'Campo Jalean y vos', sub:'Cómo llegaste a la marca.', qs:[
   { id:'p16', type:'cards', pin:'Para revisar con ustedes: ¿hay otras formas por las que llegan los clientes que no estén en la lista?', label:'¿Cómo conociste Campo Jalean?', other:'otro', opts:[
-    O('puerta','El repartidor pasó por mi casa'), O('recomendacion','Me la recomendó alguien'), O('busque','La busqué yo'),
+    O('puerta','El repartidor pasó por mi casa'), O('recom_empresa','Me la recomendó alguien de Campo Jalean'), O('recom_otra','Me la recomendó otra persona'), O('busque','La busqué yo'),
     O('redes','Por redes sociales'), O('evento','En un evento o stand'), O('otro','De otra forma','Especificá') ] },
   { id:'p17', type:'chips', label:'¿Usás o usaste otra marca de agua en <b>bidón retornable</b> en tu casa?', note:'Bidones de 12 o 20 litros que se devuelven. No cuentan las botellas que se compran sueltas.', opts:[O('no','No'),O('antes','Sí, antes de Campo Jalean'),O('vez','Sí, la uso a la vez')] },
   { id:'p17a', type:'text', label:'¿Qué marca?', ph:'Si no te acordás, escribí «no me acuerdo»', showIf:OTRA_MARCA },
@@ -589,17 +575,17 @@ const SECTIONS = [
       { v:'a', l:'Natural, de vertiente', r:'Procesada, de planta', pos:'l' },
       { v:'c', l:'De sabor liviano', r:'De sabor duro', pos:'l' },
       { v:'f', l:'Poco práctica de recibir y usar', r:'Práctica de recibir y usar', pos:'r' },
-      { v:'h', l:'Premium', r:'Accesible' },              // descriptivo: posicionamiento
+      { v:'h', l:'Calidad premium', r:'Calidad regular', pos:'l' },
       { v:'i', l:'Empresa grande', r:'Pyme familiar' },     // descriptivo: imagen de la empresa
     ] },
-  { id:'p20a', type:'chips', shuffle:true, label:'De esta lista, ¿qué es lo que <b>más</b> valorás de Campo Jalean? Elegí una.', opts:ATRIBUTOS },
-  { id:'p20b', type:'chips', orderFrom:'p20a', notSame:'p20a', exclusive:['nada'], label:'¿Y qué es lo que <b>menos</b> te convence? Elegí una.', opts:[...ATRIBUTOS, O('nada','Nada, todo me convence')] },
   { id:'p21', type:'chips', label:'Pensando en lo que pagás y lo que recibís, sentís que recibís…', opts:[O('mas','Más de lo que pagás'),O('justo','Lo justo'),O('menos','Menos de lo que pagás')] },
+  { id:'p20a', type:'chips', shuffle:true, label:'De esta lista, ¿qué es lo que <b>más</b> valorás de Campo Jalean? Elegí una.', opts:ATRIBUTOS },
+  { id:'p20b', type:'chips', orderFrom:'p20a', notSame:'p20a', exclusive:['nada'], other:'otro', pvNote:'Cambio (29/10): se suma «Otra cosa».', label:'¿Y qué es lo que <b>menos</b> te convence? Elegí una.', opts:[...ATRIBUTOS, O('otro','Otra cosa'), O('nada','Nada, todo me convence')] },
 ]},
 
 { id:'sF', tag:'F–G', path:'hog', title:'El servicio y los bidones', sub:'Cómo funciona hoy la entrega.', qs:[
   { id:'p22', type:'grid', pin:'Importante: ¿falta algún aspecto del servicio que quieran que los clientes evalúen?', label:'¿Cómo calificarías cada aspecto del servicio?', note:'Marcá una opción en cada fila.',
-    rows:[O('puntualidad','Puntualidad'),O('trato','Trato del repartidor'),O('frecuencia','Frecuencia de entrega'),O('pago','Formas de pago'),O('higiene_bidon','Higiene de los bidones')],
+    rows:[O('puntualidad','Puntualidad'),O('trato','Trato del repartidor'),O('atencion','Atención cuando llamás o escribís a la empresa'),O('pago','Formas de pago')],
     cols:SERVICIO },
   { id:'b1', type:'multichips', shuffle:true, exclusive:['nada'], other:'otro', pvNote:'Nuevo (22/10): estado de los bidones. Incluye, entre otras, la inquietud por el origen del bidón.',
     label:'En el último tiempo, ¿te pasó algo de esto con los bidones que te llegan?', note:'Podés marcar varias.', opts:[
@@ -611,18 +597,16 @@ const SECTIONS = [
 ]},
 
 { id:'sN', tag:'G2', path:'hog', title:'Otras bebidas', sub:'Para conocer qué más se toma en tu casa.', qs:[
-  { id:'n1', type:'multichips', shuffle:true, exclusive:['ninguna'], pvNote:'Nuevo (22/10): consumo actual de otras bebidas (orienta aguas saborizadas y funcionales).',
+  { id:'n1', type:'multichips', shuffle:true, exclusive:['ninguna'], pvNote:'Cambio (29/10): lista nueva de bebidas. Sale la pregunta de sabores.',
     label:'Además del agua de Campo Jalean, ¿qué otras bebidas se compran en tu casa?', note:'Podés marcar varias.', opts:[
-    O('saborizada','Agua saborizada'), O('isotonica','Bebidas deportivas o isotónicas (tipo Powerade o Gatorade)'),
-    O('jugo','Jugos (en botella o en polvo)'), O('soda','Soda'),
-    O('ninguna','Ninguna de estas') ] },
-  { id:'n2', type:'multichips', max:3, shuffle:true, other:'otro', showIf:r=>(r.n1||[]).some(v=>['saborizada','isotonica','jugo'].includes(v)),
-    label:'En esas bebidas, ¿qué sabores eligen más en tu casa? Elegí <b>hasta 3</b>.', opts:[
-    O('limon','Limón'), O('pomelo','Pomelo'), O('naranja','Naranja'), O('mandarina','Mandarina'), O('manzana','Manzana'), O('pera','Pera'),
-    O('durazno','Durazno'), O('frutilla','Frutilla'), O('frutos_rojos','Frutos rojos'), O('anana','Ananá'), O('uva','Uva'), O('otro','Otro') ] },
-  { id:'n3', type:'multichips', shuffle:true, exclusive:['ninguna'], pvNote:'Nuevo (22/10): interés en productos y en la identificación del bidón, mezclado con otras opciones.',
+    O('vitaminas','Agua con vitaminas'), O('isotonica','Bebidas deportivas o isotónicas (ej. Powerade, Gatorade)'),
+    O('suplementos','Suplementos o polvos que se mezclan con agua (electrolitos, magnesio, proteínas)'),
+    O('infusiones','Infusiones frías, tés especiales o bebidas vegetales'), O('soda','Soda o agua con gas'),
+    O('saborizada','Agua saborizada'), O('jugo','Jugos (naturales, en botella o en polvo)'), O('gaseosa','Gaseosas (comunes o sin azúcar)'),
+    O('ninguna','Ninguna, solo tomamos agua') ] },
+  { id:'n3', type:'multichips', shuffle:true, exclusive:['ninguna'], pvNote:'Interés en productos y en la identificación del bidón, mezclado con otras opciones. Cambio (29/10): se suma el bidón descartable de 6 L.',
     label:'Si Campo Jalean sumara alguna de estas opciones, ¿cuáles te interesarían?', note:'Podés marcar varias.', opts:[
-    O('saborizada','Agua saborizada'), O('electrolitos','Agua con electrolitos o minerales, para el deporte o el calor'), O('botellas','Botellas chicas para llevar'),
+    O('saborizada','Agua saborizada'), O('electrolitos','Agua con electrolitos o minerales, para el deporte o el calor'), O('botellas','Botellas chicas para llevar'), O('descartable6','Bidón descartable de 6 litros'),
     O('propio','Bidones identificados para tu casa'), O('lote','Ver la fecha de envasado y lavado de cada bidón'),
     O('ninguna','Nada de esto: con el agua de bidón me alcanza') ] },
 ]},
@@ -634,17 +618,12 @@ const SECTIONS = [
       <p class="info-lead">Un lugar cerca de tu casa donde llevás tus propios envases y los llenás con agua Campo Jalean.</p>
     </div>` },
   { id:'p25', type:'chips', label:'¿Te interesaría recargar así tus envases?', opts:[O('si','Sí'),O('tal_vez','Tal vez'),O('no','No')] },
+  { id:'p25b', type:'chips', label:'¿Qué bidón preferirías recargar?', showIf:RECARGA, pvNote:'Nuevo (29/10).', opts:[O('12','De 12 litros'),O('15','De 15 litros'),O('20','De 20 litros')] },
   { id:'p26', type:'chips', label:'¿Cada cuánto irías a recargar?', showIf:RECARGA, opts:[O('semanal','Todas las semanas'),O('15','Cada 15 días'),O('mensual','Una vez por mes'),O('ocasional','De vez en cuando')] },
   { id:'p27', type:'chips', label:'¿Hasta qué distancia irías a recargar?', showIf:RECARGA, opts:[O('1_15','Entre 1 y 15 cuadras'),O('15_30','Entre 15 y 30 cuadras'),O('30','Más de 30 cuadras')] },
-  { id:'p28', type:'cards', label:'Comparado con lo que pagás hoy por el bidón entregado en tu casa, ¿cuánto te parecería razonable pagar por la recarga?', showIf:RECARGA, opts:[
-    O('igual','Lo mismo'), O('10','Hasta un 10 % menos'), O('10_30','Entre un 10 y un 30 % menos'), O('30','Más de un 30 % menos'), O('ns','No sé') ] },
 ]},
 
-{ id:'sI', tag:'I', path:'hog', title:'Para cerrar', sub:'Tres preguntas más y terminás.', qs:[
-  { id:'p29', type:'multichips', max:2, shuffle:true, label:'¿Qué te haría dejar de comprar Campo Jalean? Elegí <b>hasta 2</b>.', exclusive:['nada'], other:'otro', opts:[
-    O('precio','Un aumento de precio'), O('entrega','Que no cumplan con el día de entrega'), O('atencion','Mala atención'), O('calidad','Cambios en el sabor o la calidad'),
-    O('higiene','Problemas de higiene'), O('filtro','Pasarme a un filtro o purificador'), O('barata','Otra marca más barata'), O('mudanza','Una mudanza'),
-    O('nada','Nada, no la dejaría'), O('otro','Otro motivo') ] },
+{ id:'sI', tag:'I', path:'hog', title:'Para cerrar', sub:'Dos preguntas más y terminás.', qs:[
   { id:'p30', type:'multichips', max:2, shuffle:true, pin:'Para conversar con ustedes: ¿qué mejoras son posibles y conviene preguntar?', label:'¿Qué mejorarías del servicio? Elegí <b>hasta 2</b>.', exclusive:['nada'], other:'otro', opts:MEJORAS },
   { id:'p31', type:'cards', label:'Desde que sos cliente, ¿le recomendaste Campo Jalean a alguien?', opts:[O('si_cliente','Sí, y se hizo cliente'),O('si_nosabe','Sí, pero no sé si se hizo cliente'),O('si_no','Sí, pero no se hizo cliente'),O('no','No, a nadie todavía')] },
 ]},
@@ -667,13 +646,11 @@ const SECTIONS = [
 
 // Vista previa: condición de cada pregunta condicional y de cada bloque
 const PV_COND = {
-  p14p:'Marcó más de un motivo (si marcó uno, se imputa)',
   p19p:'Marcó más de una palabra (si marcó una, se imputa)',
   p7a:'Vive en departamento', p7b:'Vive en departamento, no en planta baja',
   p17a:'Usa o usó otra marca', p17b:'Usa o usó otra marca',
   p24:'Conoce el bidón de 12 L y no lo usa',
-  n2:'Compra agua saborizada, bebidas isotónicas o jugos',
-  p26:'Le interesa la recarga (sí o tal vez)', p27:'Le interesa la recarga (sí o tal vez)', p28:'Le interesa la recarga (sí o tal vez)',
+  p26:'Le interesa la recarga (sí o tal vez)', p27:'Le interesa la recarga (sí o tal vez)', p25b:'Le interesa la recarga (sí o tal vez)',
 };
 const PV_PATH = { hog:'Bloque para hogares (p1 = casa o los dos)', emp:'Módulo de empresas (p1 = empresa)' };
 const PV_SCREENS = () => [['welcome','Portada'],
