@@ -39,7 +39,8 @@
   QUÉ MIRAR EN EL PILOTO
   · Planilla simplificada (29/10): "respuestas" tiene una columna por pregunta, en el orden del cuestionario,
     más duration y q_ok (0 si tardó menos de 2 min, marcó todos los pares en la misma posición o completó
-    el campo trampa). "parciales" solo guarda uuid, cod, p1, ultimo_bloque y t_parcial (abandono por bloque).
+    el campo trampa). "parciales" tiene las mismas columnas, con lo respondido hasta cada bloque, más ultimo_bloque
+    (duration = segundos hasta ese bloque; q_ok vacío).
   · Imagen: lista de palabras sin tope (p19) + la que mejor la describe (p19p) + 5 pares opuestos (p19d,
     valor crudo: 1 = frase de la izquierda, 5 = frase de la derecha).
   · Marcas 📌 de la vista previa: puntos para revisar con el cliente antes del campo.
@@ -1093,17 +1094,30 @@ function columnasPlanilla(){
   }));
   return cols.concat(['duration','q_ok']);
 }
+function filaPlanilla(flat){
+  const fila = {};
+  columnasPlanilla().forEach(k=>{ fila[k] = flat[k] ?? ''; });
+  return fila;
+}
 function savePartial(sid){
-  // al terminar cada bloque: solo lo necesario para medir el abandono
-  postToSheets({ tipo:'parcial', uuid:responses.uuid, cod:responses.cod, prueba:responses.prueba, canal:responses.canal,
-    p1:responses.p1||'', ultimo_bloque:sid, t_parcial:Math.round((Date.now()-startTime)/1000) });
+  // al terminar cada bloque: las mismas columnas que la respuesta final, con lo respondido hasta ahí,
+  // más ultimo_bloque. duration = segundos transcurridos; q_ok queda vacío hasta terminar.
+  const activas = new Set(activeSections().map(s=>s.id));
+  const parcial = { ...responses };
+  Object.values(QMAP).forEach(q=>{
+    if (!isVisible(q) || !activas.has(sectionOf(q.id).id)){
+      delete parcial[q.id]; delete parcial[q.id+'_otro'];
+      (q.rows||[]).forEach(r=>delete parcial[q.id+'_'+r.v]);
+    }
+  });
+  parcial.duration = Math.round((Date.now()-startTime)/1000);
+  delete parcial.q_ok;
+  postToSheets({ tipo:'parcial', ...filaPlanilla(flatten(parcial)), ultimo_bloque:sid });
 }
 async function saveResponse(data){
   const flat = flatten(data);
   try { localStorage.setItem(STORAGE_PREFIX+data.uuid, JSON.stringify(flat)); } catch(e){}
-  const fila = {};
-  columnasPlanilla().forEach(k=>{ fila[k] = flat[k] ?? ''; });
-  await postToSheets({ tipo:'respuesta', ...fila });
+  await postToSheets({ tipo:'respuesta', ...filaPlanilla(flat) });
 }
 function getAllResponses(){
   const all = [];
