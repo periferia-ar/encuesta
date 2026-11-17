@@ -517,7 +517,7 @@ const PALABRAS = [...PALABRAS_DEF.map(([v,t])=>O(v,t)), O('ninguna','Ninguna de 
 const VALENCIA = Object.fromEntries(PALABRAS_DEF.map(([v,,s])=>[v,s]));
 const OPUESTAS = [['natural','procesada'],['pura','dudas'],['rica','pesada'],['especial','comun'],['practica','poco_practica'],['cercana','impersonal'],['accesible','cara']];
 const MEJORAS = [
-  O('aviso','Aviso cuando el repartidor está por llegar'), O('seguimiento','Seguimiento en tiempo real del repartidor'),
+  O('seguimiento','Seguimiento en tiempo real del repartidor'),
   O('pago','Más formas de pago'), O('livianos','Envases más livianos'), O('nada','Nada, está bien así'), O('otro','Otra cosa') ];
 
 // ============================================================
@@ -586,7 +586,7 @@ const SECTIONS = [
     ] },
   { id:'p21', type:'chips', label:'Pensando en lo que pagás y lo que recibís, sentís que recibís…', opts:[O('mas','Más de lo que pagás'),O('justo','Lo justo'),O('menos','Menos de lo que pagás')] },
   { id:'p20a', type:'chips', shuffle:true, label:'De esta lista, ¿qué es lo que <b>más</b> valorás de Campo Jalean? Elegí una.', opts:ATRIBUTOS },
-  { id:'p20b', type:'chips', orderFrom:'p20a', notSame:'p20a', exclusive:['nada'], other:'otro', pvNote:'Cambio (29/10): se suma «Otra cosa».', label:'¿Y qué es lo que <b>menos</b> te convence? Elegí una.', opts:[...ATRIBUTOS, O('otro','Otra cosa'), O('nada','Nada, todo me convence')] },
+  { id:'p20b', type:'chips', orderFrom:'p20a', notSame:'p20a', exclusive:['nada'], other:'otro', pvNote:'Cambio (29/10): se suma «Otra cosa».', label:'¿Y qué es lo que <b>menos</b> te convence? Elegí una.', opts:[...ATRIBUTOS.filter(o=>o.v!=='deporte'), O('otro','Otra cosa'), O('nada','Nada, todo me convence')] },
 ]},
 
 { id:'sF', tag:'F–G', path:'hog', title:'El servicio y los bidones', sub:'Cómo funciona hoy la entrega.', qs:[
